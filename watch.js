@@ -30,6 +30,11 @@ function drawWindowFrom(lastDrawText) {
 async function main() {
   console.log(`=== Immigration source check — ${new Date().toISOString()} ===  DRY_RUN=${SETTINGS.DRY_RUN}`);
   if (!process.env.GEMINI_KEY) console.log(`!! No GEMINI_KEY — the pages cannot be read. Add the secret.`);
+  if (!process.env.RESEND_KEY) console.log(`!! No RESEND_KEY — the report cannot be emailed. Add the secret.`);
+  console.log(`Report goes to: ${SETTINGS.REPORT_TO}${SETTINGS.REPORT_CC.length ? ` (cc ${SETTINGS.REPORT_CC.join(", ")})` : ""}`);
+  console.log(SETTINGS.DRY_RUN
+    ? `DRY RUN: the report will be written to the artifact but NOT emailed.`
+    : `LIVE: the report will be emailed at the end of this run.`);
 
   console.log(`\nReading ${Object.keys(SOURCES).length} official pages...`);
   const pages = await loadSources();
@@ -88,7 +93,14 @@ async function main() {
     : unreadable.length ? `Immigration sources — nothing changed, ${unreadable.length} not checked`
     : `Immigration sources — nothing changed`;
   const ok = await sendReport(subject, html);
-  console.log(ok ? `Sent to ${SETTINGS.REPORT_TO}` : `FAILED to send.`);
+  if (ok) console.log(`\nSent to ${SETTINGS.REPORT_TO}`);
+  else {
+    console.log(`\n!! THE REPORT WAS NOT SENT.`);
+    console.log(`   The findings are above and in the downloadable artifact, so nothing is lost.`);
+    console.log(`   Usual causes: RESEND_KEY missing, or the sender can only reach the address`);
+    console.log(`   the Resend account was registered with (${SETTINGS.REPORT_TO}).`);
+    process.exitCode = 1;   // so the run shows as failed rather than quietly passing
+  }
 }
 
 main().catch((e) => { console.error("FATAL:", e.message); process.exit(1); });
