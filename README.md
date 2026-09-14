@@ -1,7 +1,7 @@
 # Immigration Source Check
 
 Every Monday morning this reads the official government pages behind the reference
-workbook and emails **what changed**. It never edits the workbook — a person does that,
+workbook and emails **what changed**, to **harisimtiaz@hofmigration.com** (copied to Ali). It never edits the workbook — a person does that,
 after reading the evidence.
 
 That split is deliberate. The QA sheet rates government fee accuracy as a **critical**
@@ -9,15 +9,29 @@ error category, so no figure should reach a client without someone having seen i
 
 ---
 
+## What it owns, and what it does not
+
+**It owns every government figure in the workbook.** Fees, draws, categories, occupation
+lists, proof of funds — anything published by IRCC, Home Affairs, USCIS or the State
+Department.
+
+**It never touches HOF's own pricing.** Those are internal policy set by a Manager, and
+no outside page should be able to move them. A self-test enforces this.
+
 ## What it watches
 
-**15 figures across 10 official pages.**
+**18 items across 10 official pages** — 15 single figures and 3 full lists.
 
 | Country | Figures |
 |---|---|
 | Canada | PR fee incl. RPRF · dependent child · biometrics · biometrics family max · proof of funds · latest Express Entry draw · number of active categories |
 | Australia | Subclass 189 charge · Subclass 190 charge · latest SkillSelect round |
 | USA | I-140 · Asylum Program Fee · premium processing · USCIS Immigrant Fee · immigrant visa fee |
+
+Plus three **full lists**, rebuilt from source each week and sent ready to paste:
+Canada's category and occupation list, Australia's skilled occupation list, and the
+proof-of-funds table for every family size. That is how the occupation lists stay
+complete without anyone maintaining them by hand.
 
 Only `canada.ca`, `ircc.canada.ca`, `homeaffairs.gov.au`, `uscis.gov` and `state.gov`
 are used — a self-test enforces that, so a blog or a forum can never become a source.
