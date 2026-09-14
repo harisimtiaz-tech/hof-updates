@@ -1,0 +1,9 @@
+{
+  "name": "hof-source-watch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Weekly check of official immigration sources against the HOF reference workbook.",
+  "type": "commonjs",
+  "engines": { "node": ">=18" },
+  "scripts": { "start": "node watch.js", "test": "node selftest.js" }
+}
