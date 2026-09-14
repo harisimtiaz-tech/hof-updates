@@ -15,7 +15,7 @@ on:
       report_to:
         description: "Who receives the report"
         required: true
-        default: "razaali@hofmigration.com"
+        default: "harisimtiaz@hofmigration.com"
         type: string
 
 jobs:
@@ -33,8 +33,10 @@ jobs:
         env:
           GEMINI_KEY: ${{ secrets.GEMINI_KEY }}
           RESEND_KEY: ${{ secrets.RESEND_KEY }}
+          # On the Monday schedule there are no inputs, so these are empty and the run
+          # sends for real. A manual run can still choose a dry run.
           DRY_RUN_INPUT: ${{ inputs.dry_run }}
-          REPORT_TO: ${{ inputs.report_to }}
+          REPORT_TO: ${{ inputs.report_to || 'harisimtiaz@hofmigration.com' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
