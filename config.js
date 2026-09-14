@@ -6,10 +6,14 @@
 //
 // AFTER YOU UPDATE THE WORKBOOK, update `current` here too, or the same change is
 // reported again next week.
+//
+// SCOPE: everything here is government information, and the agent owns keeping it
+// current. HOF's own pricing is NOT watched and never will be — that is internal policy
+// set by a Manager, and no outside page should ever be able to move it.
 
 const SETTINGS = {
-  REPORT_TO: process.env.REPORT_TO || "razaali@hofmigration.com",
-  REPORT_CC: [],
+  REPORT_TO: process.env.REPORT_TO || "harisimtiaz@hofmigration.com",
+  REPORT_CC: ["razaali@hofmigration.com"],
   FROM_EMAIL: process.env.FROM_EMAIL || "onboarding@resend.dev",
   DRY_RUN: process.env.DRY_RUN_INPUT ? process.env.DRY_RUN_INPUT === "true" : true,
   GEMINI_MODEL: "gemini-flash-lite-latest",
@@ -97,9 +101,24 @@ const WATCH = [
     label: "USCIS Immigrant Fee", source: "uscis_immigrant_fee", unit: "USD", current: "235",
     question: "What is the USCIS Immigrant Fee per person? Give the number in USD." },
 
-  { id: "us_iv_fee", country: "USA", tab: "Fees & Calculator",
-    label: "Employment-based immigrant visa application fee", source: "state_visa_fees", unit: "USD", current: "345",
+  { id: "us_iv_fee", country: "USA", tab: "🇺🇸 USA NIW", unit: "USD", current: "345",
+    label: "Employment-based immigrant visa application fee", source: "state_visa_fees",
     question: "What is the immigrant visa application processing fee for employment-based applications, per person? Give the number in USD." },
+
+  // ---------------- the reference lists ----------------
+  // These are not single figures, so they are reported as full lists for pasting into
+  // the workbook rather than compared number against number.
+  { id: "ca_category_list", country: "Canada", tab: "Occupations", unit: "", current: "list",
+    label: "Category-based selection — the full category list", source: "ircc_categories", list: true,
+    question: "List EVERY category currently used for category-based selection, and for each one the eligible occupations with their NOC code and TEER level. Give it as lines of: Category | Occupation | NOC | TEER" },
+
+  { id: "au_occupation_list", country: "Australia", tab: "Occupations", unit: "", current: "list",
+    label: "Skilled occupation list — the full list", source: "au_occupations", list: true,
+    question: "List EVERY occupation on the current skilled occupation list, with its ANZSCO code and which visa subclasses it applies to. Give it as lines of: Occupation | ANZSCO | Subclasses" },
+
+  { id: "ca_pof_all", country: "Canada", tab: "🇨🇦 Canada", unit: "CAD", current: "list",
+    label: "Proof of funds — every family size", source: "ircc_pof", list: true,
+    question: "List the Express Entry proof of funds amount for EVERY family size shown, from 1 upwards. Give it as lines of: Family size | Amount in CAD" },
 ];
 
 module.exports = { SETTINGS, SOURCES, WATCH };
