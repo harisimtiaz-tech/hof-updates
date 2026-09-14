@@ -18,6 +18,16 @@ check("ids are unique", new Set(WATCH.map((w) => w.id)).size === WATCH.length);
 check("every figure names the workbook tab to update", WATCH.every((w) => w.tab));
 check("HOF's own pricing is never watched", !WATCH.some((w) => /hof|consultancy|instalment|one-time/i.test(w.label)));
 check("the report goes to Haris", SETTINGS.REPORT_TO === "harisimtiaz@hofmigration.com");
+check("there is no CC — the built-in Resend sender can only reach the account owner",
+  SETTINGS.REPORT_CC.length === 0);
+check("a scheduled run is NOT a dry run", (() => {
+  // a cron run passes an empty string, which must not be read as "dry run"
+  const before = process.env.DRY_RUN_INPUT;
+  const read = (v) => String(v || "").toLowerCase() === "true";
+  const ok = read("") === false && read(undefined) === false && read("true") === true && read("false") === false;
+  process.env.DRY_RUN_INPUT = before;
+  return ok;
+})());
 check("the full lists are marked as lists", WATCH.filter((w) => w.list).length >= 3);
 check("a list is reported, not compared as a number",
   compare({ id: "l", list: true, label: "x", tab: "y", country: "Canada" }, { found: true, value: "a|b|c" }).status === "list");
