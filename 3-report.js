@@ -108,7 +108,14 @@ async function sendReport(subject, html) {
     method: "POST", headers: { Authorization: `Bearer ${process.env.RESEND_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) { console.log(`Report failed: ${res.status} ${(await res.text()).slice(0,200)}`); return false; }
+  if (!res.ok) {
+    const t = (await res.text()).slice(0, 300);
+    console.log(`Report failed: ${res.status} ${t}`);
+    if (res.status === 403 && SETTINGS.FROM_EMAIL.endsWith("resend.dev"))
+      console.log(`  The built-in Resend sender only delivers to the address the account was registered with.\n  Either send only to that address, or verify hofmigration.com in Resend and use noreply@hofmigration.com.`);
+    if (res.status === 401) console.log(`  The RESEND_KEY was rejected.`);
+    return false;
+  }
   return true;
 }
 
