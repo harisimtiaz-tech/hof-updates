@@ -34,6 +34,7 @@ const rowTable = (rows, headers) => `<table role="presentation" cellpadding="0" 
 </table>`;
 
 function buildReport({ results, drawWindow, dryRun }) {
+  const lists = results.filter((r) => r.status === "list");
   const changed = results.filter((r) => r.status === "CHANGED");
   const unreadable = results.filter((r) => r.status === "unreadable" || r.status === "not-stated");
   const fine = results.filter((r) => r.status === "unchanged");
@@ -63,6 +64,16 @@ ${drawWindow ? heading("Next Express Entry draw", C.royal) +
       <strong>Estimate only.</strong> IRCC never announces draw dates in advance. This is calculated from the usual two-week rhythm for planning, and must never be quoted to a client as a date.
     </div>
   </td></tr></table>` : ""}
+
+${lists.length ? heading("Current lists — paste these into the workbook", C.royal) +
+  para(`Read fresh from the official pages this morning. Replace the matching rows in the workbook, then nothing else needs doing.`, 13, C.soft) +
+  lists.map((r) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 12px;border:1px solid ${C.line};border-radius:6px">
+    <tr><td style="padding:12px 14px">
+      <div style="font:700 14px/1.4 ${F};color:${C.ink}">${esc(r.item.country)} &middot; ${esc(r.item.label)}</div>
+      <div style="font:400 12px/1.5 ${F};color:${C.soft};margin-top:3px">Workbook tab: ${esc(r.item.tab)}</div>
+      <div style="font:400 12px/1.7 ${F};color:${C.body};margin-top:10px;padding:10px 12px;background:${C.panel};border-radius:6px;white-space:pre-wrap;max-height:340px;overflow:auto">${esc(String(r.now || "").slice(0, 6000))}</div>
+      <div style="margin-top:9px"><a href="${esc(r.sourceUrl)}" style="color:${C.royal};font:600 13px/1.4 ${F};text-decoration:none">Official page &rarr;</a></div>
+    </td></tr></table>`).join("") : ""}
 
 ${unreadable.length ? heading("Could not be checked", C.warn) +
   para(`These were not verified this week. That is not the same as unchanged — the pages may have moved or changed shape.`, 13, C.soft) +
