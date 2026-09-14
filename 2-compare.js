@@ -8,6 +8,14 @@ const clean = (v) => String(v ?? "").replace(/[^0-9a-zA-Z.\-]/g, "").toLowerCase
 const num = (v) => { const n = parseFloat(String(v ?? "").replace(/[^0-9.\-]/g, "")); return Number.isFinite(n) ? n : null; };
 
 function compare(item, answer) {
+  // A list is not a figure. It is reported in full for pasting into the workbook, and
+  // never shown as "changed from X to Y", which would be meaningless for 90 rows.
+  if (item.list) {
+    if (!answer || answer.error) return { status: "unreadable", detail: answer?.error || "no answer", item };
+    if (answer.found === false) return { status: "not-stated", detail: answer.note || "the page does not state it", item };
+    return { status: "list", item, now: answer.value, quote: answer.quote || "", note: answer.note || "" };
+  }
+
   if (!answer || answer.error)
     return { status: "unreadable", detail: answer?.error || "no answer", item };
   if (answer.found === false)
