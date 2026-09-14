@@ -12,10 +12,17 @@
 // set by a Manager, and no outside page should ever be able to move it.
 
 const SETTINGS = {
+  // The Resend account belongs to Haris, and the built-in sender onboarding@resend.dev
+  // only delivers to the address that account was registered with. So this must be his
+  // address, and there must be NO CC — a CC to anyone else makes Resend reject the whole
+  // send with a 403 and nothing arrives at all.
   REPORT_TO: process.env.REPORT_TO || "harisimtiaz@hofmigration.com",
-  REPORT_CC: ["razaali@hofmigration.com"],
+  REPORT_CC: [],
   FROM_EMAIL: process.env.FROM_EMAIL || "onboarding@resend.dev",
-  DRY_RUN: process.env.DRY_RUN_INPUT ? process.env.DRY_RUN_INPUT === "true" : true,
+  // A scheduled run has no workflow inputs, so DRY_RUN_INPUT arrives as an empty string.
+  // The old code treated that as "unset" and fell back to true, which meant every Monday
+  // run checked everything and emailed nobody. Only an explicit "true" is a dry run now.
+  DRY_RUN: String(process.env.DRY_RUN_INPUT || "").toLowerCase() === "true",
   GEMINI_MODEL: "gemini-flash-lite-latest",
   CONCURRENCY: 3,
   // Express Entry rounds run about every two weeks. Used to work out the expected
