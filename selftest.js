@@ -16,6 +16,11 @@ check("every watched figure has a source that exists", WATCH.every((w) => SOURCE
 check("every figure has a question and a current value", WATCH.every((w) => w.question && w.current));
 check("ids are unique", new Set(WATCH.map((w) => w.id)).size === WATCH.length);
 check("every figure names the workbook tab to update", WATCH.every((w) => w.tab));
+check("HOF's own pricing is never watched", !WATCH.some((w) => /hof|consultancy|instalment|one-time/i.test(w.label)));
+check("the report goes to Haris", SETTINGS.REPORT_TO === "harisimtiaz@hofmigration.com");
+check("the full lists are marked as lists", WATCH.filter((w) => w.list).length >= 3);
+check("a list is reported, not compared as a number",
+  compare({ id: "l", list: true, label: "x", tab: "y", country: "Canada" }, { found: true, value: "a|b|c" }).status === "list");
 check("all three countries are covered", ["Canada", "Australia", "USA"].every((c) => WATCH.some((w) => w.country === c)));
 check("every source is an official government domain",
   Object.values(SOURCES).every((u) => /(canada\.ca|ircc\.canada\.ca|homeaffairs\.gov\.au|uscis\.gov|state\.gov)/.test(u)),
