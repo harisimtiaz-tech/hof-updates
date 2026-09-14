@@ -47,7 +47,7 @@ async function main() {
     const r = compare(item, answer);
     r.sourceUrl = page.url;
     results.push(r);
-    const mark = r.status === "CHANGED" ? "!!" : r.status === "unchanged" ? "ok" : "? ";
+    const mark = r.status === "CHANGED" ? "!!" : r.status === "unchanged" ? "ok" : r.status === "list" ? "[]" : "? ";
     console.log(`  ${mark} ${item.id.padEnd(22)} ${r.status === "CHANGED" ? `${r.was} -> ${r.now}` : r.status}`);
   }
 
@@ -55,10 +55,11 @@ async function main() {
   const drawWindow = drawWindowFrom(latest && latest.status === "CHANGED" ? latest.now : (latest ? latest.item.current : null));
 
   const changed = results.filter((r) => r.status === "CHANGED");
-  const unreadable = results.filter((r) => r.status !== "CHANGED" && r.status !== "unchanged");
+  const lists = results.filter((r) => r.status === "list");
+  const unreadable = results.filter((r) => !["CHANGED", "unchanged", "list"].includes(r.status));
 
   console.log(`\n===== SUMMARY =====`);
-  console.log(`${results.length} figures | CHANGED ${changed.length} | unchanged ${results.length - changed.length - unreadable.length} | not checked ${unreadable.length}`);
+  console.log(`${results.length} items | CHANGED ${changed.length} | lists refreshed ${lists.length} | unchanged ${results.length - changed.length - unreadable.length - lists.length} | not checked ${unreadable.length}`);
   if (changed.length) {
     console.log(`\nCHANGED — update the workbook, then update "current" in config.js:`);
     for (const r of changed) {
